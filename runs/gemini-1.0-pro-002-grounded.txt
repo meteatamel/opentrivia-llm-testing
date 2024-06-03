@@ -1,0 +1,26 @@
+python main.py genai-atamel gemini-1.0-pro-002 --google_search_grounding > gemini-1.0-pro-002-grounded.txt
+=============================
+Project: genai-atamel
+No of iterations: 4
+No of questions per iteration: 25
+Google search grounding: True
+Model: gemini-1.0-pro-002
+=============================
+== Test run: 1 ==
+Questions requested: 25
+Questions with matching correct answers: 21
+Percentage correct: 84.00%
+== Test run: 2 ==
+Questions requested: 25
+Questions with matching correct answers: 20
+Percentage correct: 80.00%
+== Test run: 3 ==
+Questions requested: 25
+Questions with matching correct answers: 22
+Percentage correct: 88.00%
+== Test run: 4 ==
+Questions requested: 25
+Questions with matching correct answers: 21
+Percentage correct: 84.00%
+Execution time: 68.93 seconds
+=== Average percentage correct over 4 runs: 84.00% ===

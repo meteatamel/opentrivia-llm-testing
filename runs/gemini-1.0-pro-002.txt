@@ -1,0 +1,26 @@
+python main.py genai-atamel gemini-1.0-pro-002
+=============================
+Project: genai-atamel
+No of iterations: 4
+No of questions per iteration: 25
+Google search grounding: False
+Model: gemini-1.0-pro-002
+=============================
+== Test run: 1 ==
+Questions requested: 25
+Questions with matching correct answers: 21
+Percentage correct: 84.00%
+== Test run: 2 ==
+Questions requested: 25
+Questions with matching correct answers: 19
+Percentage correct: 76.00%
+== Test run: 3 ==
+Questions requested: 25
+Questions with matching correct answers: 23
+Percentage correct: 92.00%
+== Test run: 4 ==
+Questions requested: 25
+Questions with matching correct answers: 24
+Percentage correct: 96.00%
+Execution time: 57.45 seconds
+=== Average percentage correct over 4 runs: 87.00% ===
