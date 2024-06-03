@@ -59,7 +59,7 @@ def transform_questions(questions):
     ]
 
 
-def ask_llm(project_id, model_name, use_google_search_grounding, questions_transformed):
+def ask_llm(project_id, model_name, google_search_grounding, questions_transformed):
     """
     Pass the transformed questions to LLM and ask it to find the correct answer
     """
@@ -78,7 +78,7 @@ Here's the JSON: {json.dumps(questions_transformed, indent=2)}
     logger.debug(f"Prompt: {prompt}")
 
 
-    tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
+    tools = [Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())] if google_search_grounding else None
 
     response = model.generate_content(prompt,
                                       generation_config={ "temperature": 0},
@@ -87,7 +87,7 @@ Here's the JSON: {json.dumps(questions_transformed, indent=2)}
                                             generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
                                             generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
                                             generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE},
-                                    tools=[tool]
+                                    tools=tools
     )
 
     logger.debug(f"Response.text: {response.text}")
