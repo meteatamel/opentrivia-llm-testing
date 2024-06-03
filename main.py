@@ -188,7 +188,7 @@ def parse_args():
     return args
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
     args = parse_args()
     run_tests(args.project_id, args.model_name, args.num_iterations, args.no_questions, args.google_search_grounding)
 
