@@ -1,13 +1,13 @@
 import json
 import logging
 import random
-import time
-
 import requests
 import re
+import sys
 import vertexai
 from vertexai.generative_models import GenerativeModel
 from vertexai.preview import generative_models
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -58,11 +58,11 @@ def transform_questions(questions):
     ]
 
 
-def ask_llm(model_name, questions_transformed):
+def ask_llm(project_id, model_name, questions_transformed):
     """
     Pass the transformed questions to LLM and ask it to find the correct answer
     """
-    vertexai.init(project="genai-atamel", location="us-central1")
+    vertexai.init(project=project_id, location="us-central1")
 
     model = GenerativeModel(model_name=model_name, generation_config={"response_mime_type": "application/json"})
 
@@ -140,7 +140,7 @@ def compare_question_lists(questions_original, questions_graded):
     return percentage_correct
 
 
-def run_test(model_name, no_questions):
+def run_test(project_id, model_name, no_questions):
     logger.info(f"Questions requested: {no_questions}")
 
     questions_original = get_questions(no_questions)
@@ -149,7 +149,7 @@ def run_test(model_name, no_questions):
     questions_transformed = transform_questions(questions_original)
     logger.debug("questions_transformed: " + json.dumps(questions_transformed, indent=2))
 
-    questions_graded = ask_llm(model_name, questions_transformed)
+    questions_graded = ask_llm(project_id, model_name, questions_transformed)
     logger.debug(f"questions_graded: " + json.dumps(questions_graded, indent=2))
 
     percentage_correct = compare_question_lists(questions_original, questions_graded)
@@ -157,14 +157,15 @@ def run_test(model_name, no_questions):
     return percentage_correct
 
 
-def run_tests(model_name, num_iterations=4, no_questions=25):
+def run_tests(project_id, model_name, num_iterations=4, no_questions=25):
     start_time = time.time()
     results = []
 
+    logger.info(f"=== Project: {project_id} ===")
     logger.info(f"=== Model: {model_name} ===")
     for iteration in range(num_iterations):
-        logger.info(f"= Test run: {iteration + 1} = ")
-        percentage_correct = run_test(model_name, no_questions)
+        logger.info(f"== Test run: {iteration + 1} ==")
+        percentage_correct = run_test(project_id, model_name, no_questions)
         results.append(percentage_correct)
     average_percentage = sum(results) / num_iterations
 
@@ -177,13 +178,13 @@ def run_tests(model_name, num_iterations=4, no_questions=25):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(message)s')
 
-    model_name = "gemini-1.0-pro-002"
-    run_tests(model_name)
+    if len(sys.argv) < 3:
+        print("Usage: python main.py <project_id> <model_name>")
+        sys.exit(1)
 
-    model_name = "gemini-1.5-pro-001"
-    run_tests(model_name)
+    project_id = sys.argv[1]
+    model_name = sys.argv[2]
 
-    model_name = "gemini-1.5-flash-001"
-    run_tests(model_name)
+    run_tests(project_id, model_name)
 
 
