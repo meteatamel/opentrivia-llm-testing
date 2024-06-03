@@ -1,11 +1,12 @@
+import argparse
 import json
 import logging
 import random
 import requests
 import re
-import sys
 import vertexai
-from vertexai.generative_models import GenerativeModel
+from vertexai.preview.generative_models import grounding
+from vertexai.generative_models import GenerativeModel, Tool
 from vertexai.preview import generative_models
 import time
 
@@ -58,7 +59,7 @@ def transform_questions(questions):
     ]
 
 
-def ask_llm(project_id, model_name, questions_transformed):
+def ask_llm(project_id, model_name, use_google_search_grounding, questions_transformed):
     """
     Pass the transformed questions to LLM and ask it to find the correct answer
     """
@@ -76,13 +77,17 @@ Here's the JSON: {json.dumps(questions_transformed, indent=2)}
 
     logger.debug(f"Prompt: {prompt}")
 
+
+    tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
+
     response = model.generate_content(prompt,
                                       generation_config={ "temperature": 0},
                                       safety_settings={
                                             generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
                                             generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
                                             generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-                                            generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE}
+                                            generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE},
+                                    tools=[tool]
     )
 
     logger.debug(f"Response.text: {response.text}")
@@ -140,7 +145,7 @@ def compare_question_lists(questions_original, questions_graded):
     return percentage_correct
 
 
-def run_test(project_id, model_name, no_questions):
+def run_test(project_id, model_name, no_questions, google_search_grounding):
     logger.info(f"Questions requested: {no_questions}")
 
     questions_original = get_questions(no_questions)
@@ -149,7 +154,7 @@ def run_test(project_id, model_name, no_questions):
     questions_transformed = transform_questions(questions_original)
     logger.debug("questions_transformed: " + json.dumps(questions_transformed, indent=2))
 
-    questions_graded = ask_llm(project_id, model_name, questions_transformed)
+    questions_graded = ask_llm(project_id, model_name, google_search_grounding, questions_transformed)
     logger.debug(f"questions_graded: " + json.dumps(questions_graded, indent=2))
 
     percentage_correct = compare_question_lists(questions_original, questions_graded)
@@ -157,15 +162,21 @@ def run_test(project_id, model_name, no_questions):
     return percentage_correct
 
 
-def run_tests(project_id, model_name, num_iterations=4, no_questions=25):
+def run_tests(project_id, model_name, num_iterations, no_questions, google_search_grounding):
+    logger.info(f"=============================")
+    logger.info(f"Project: {project_id}")
+    logger.info(f"No of iterations: {num_iterations}")
+    logger.info(f"No of questions per iteration: {no_questions}")
+    logger.info(f"Google search grounding: {google_search_grounding}")
+    logger.info(f"Model: {model_name}")
+    logger.info(f"=============================")
+
     start_time = time.time()
     results = []
 
-    logger.info(f"=== Project: {project_id} ===")
-    logger.info(f"=== Model: {model_name} ===")
     for iteration in range(num_iterations):
         logger.info(f"== Test run: {iteration + 1} ==")
-        percentage_correct = run_test(project_id, model_name, no_questions)
+        percentage_correct = run_test(project_id, model_name, no_questions, google_search_grounding)
         results.append(percentage_correct)
     average_percentage = sum(results) / num_iterations
 
@@ -176,15 +187,24 @@ def run_tests(project_id, model_name, num_iterations=4, no_questions=25):
 
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description='Process project and model information.')
+    parser.add_argument('project_id', type=str, help='Google Cloud project id')
+    parser.add_argument('model_name', type=str, help='Model name')
+    parser.add_argument('--num_iterations', type=int, default=4, help='Number of iterations (default: 4)')
+    parser.add_argument('--no_questions', type=int, default=25, help='Number of questions per iteration (default: 25)')
+    parser.add_argument('--google_search_grounding', action='store_true', help='Use Google search grounding (default: False)')
+
+    args = parser.parse_args()
+
+    project_id = args.project_id
+    model_name = args.model_name
+    num_iterations = args.num_iterations
+    no_questions = args.no_questions
+    google_search_grounding = args.google_search_grounding
+
     logging.basicConfig(level=logging.INFO, format='%(message)s')
 
-    if len(sys.argv) < 3:
-        print("Usage: python main.py <project_id> <model_name>")
-        sys.exit(1)
-
-    project_id = sys.argv[1]
-    model_name = sys.argv[2]
-
-    run_tests(project_id, model_name)
+    run_tests(project_id, model_name, num_iterations, no_questions, google_search_grounding)
 
 
