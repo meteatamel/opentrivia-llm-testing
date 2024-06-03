@@ -77,7 +77,6 @@ Here's the JSON: {json.dumps(questions_transformed, indent=2)}
 
     logger.debug(f"Prompt: {prompt}")
 
-
     tools = [Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())] if google_search_grounding else None
 
     response = model.generate_content(prompt,
@@ -97,25 +96,16 @@ Here's the JSON: {json.dumps(questions_transformed, indent=2)}
 
 def remove_json_markers(json_string, start_marker="```json", end_marker="```"):
     """
-    Removes specified markers from a string if it starts and ends with them.
-
-    Args:
-        json_string (str): The string to check and potentially modify.
-        start_marker (str): The marker expected at the beginning of the string.
-        end_marker (str): The marker expected at the end of the string.
-
-    Returns:
-        str: The modified string with markers removed if found, or the original string if not.
+    Sometimes LLM wraps the response into ```json``` markers. Remove them.
     """
 
     pattern = re.escape(start_marker) + r"(.*?)" + re.escape(end_marker)
     match = re.search(pattern, json_string, re.DOTALL)  # re.DOTALL to match newlines
 
     if match:
-        logger.debug(f"Removing JSON markers")
-        return match.group(1)  # Extract the content between the markers
-    else:
-        return json_string
+        logger.debug(f"Removed JSON marker")
+        return match.group(1)
+    return json_string
 
 
 def compare_question_lists(questions_original, questions_graded):
@@ -186,8 +176,7 @@ def run_tests(project_id, model_name, num_iterations, no_questions, google_searc
     logger.info(f"=== Average percentage correct over {num_iterations} runs: {average_percentage:.2f}% ===\n")
 
 
-if __name__ == '__main__':
-
+def parse_args():
     parser = argparse.ArgumentParser(description='Process project and model information.')
     parser.add_argument('project_id', type=str, help='Google Cloud project id')
     parser.add_argument('model_name', type=str, help='Model name')
@@ -196,15 +185,11 @@ if __name__ == '__main__':
     parser.add_argument('--google_search_grounding', action='store_true', help='Use Google search grounding (default: False)')
 
     args = parser.parse_args()
+    return args
 
-    project_id = args.project_id
-    model_name = args.model_name
-    num_iterations = args.num_iterations
-    no_questions = args.no_questions
-    google_search_grounding = args.google_search_grounding
-
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
-
-    run_tests(project_id, model_name, num_iterations, no_questions, google_search_grounding)
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
+    args = parse_args()
+    run_tests(args.project_id, args.model_name, args.num_iterations, args.no_questions, args.google_search_grounding)
 
 
