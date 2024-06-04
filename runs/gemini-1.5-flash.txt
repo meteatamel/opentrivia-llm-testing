@@ -1,0 +1,31 @@
+python main.py genai-atamel gemini-1.5-flash
+=============================
+Project: genai-atamel
+No of iterations: 4
+No of questions per iteration: 25
+Google search grounding: False
+Model: gemini-1.5-flash
+=============================
+== Test run: 1 ==
+Questions requested: 25
+Questions with matching correct answers: 15
+Percentage correct: 60.00%
+Execution time: 17.23 seconds
+== Test run: 2 ==
+Questions requested: 25
+Questions with matching correct answers: 21
+Percentage correct: 84.00%
+Execution time: 13.97 seconds
+== Test run: 3 ==
+Questions requested: 25
+Questions with matching correct answers: 24
+Percentage correct: 96.00%
+Execution time: 17.80 seconds
+== Test run: 4 ==
+Questions requested: 25
+Questions with matching correct answers: 22
+Percentage correct: 88.00%
+Execution time: 18.09 seconds
+=============================
+Percentage correct: min=60.00%, avg=82.00%, max=96.00% | Execution time: min=13.97s, avg=16.77s, max=18.09s
+=============================

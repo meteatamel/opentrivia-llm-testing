@@ -21,10 +21,12 @@ Run with all options:
 python main.py your-project-id model-id --num_iterations=4  --no_questions=25 --google_search_grounding
 ```
 
-Examples:
+Example runs:
 
 ```sh
-python main.py genai-atamel gemini-1.0-pro-002
-python main.py genai-atamel gemini-1.5-pro-001
-python main.py genai-atamel gemini-1.5-flash-001
+python main.py genai-atamel gemini-1.0-pro
+python main.py genai-atamel gemini-1.5-pro
+python main.py genai-atamel gemini-1.5-flash
 ```
+
+You can find some run outputs in [runs](runs) folder.

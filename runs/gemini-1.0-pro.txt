@@ -1,31 +1,31 @@
-python main.py genai-atamel gemini-1.5-pro --google_search_grounding
+python main.py genai-atamel gemini-1.0-pro
 =============================
 Project: genai-atamel
 No of iterations: 4
 No of questions per iteration: 25
-Google search grounding: True
-Model: gemini-1.5-pro
+Google search grounding: False
+Model: gemini-1.0-pro
 =============================
 == Test run: 1 ==
 Questions requested: 25
-Questions with matching correct answers: 22
-Percentage correct: 88.00%
-Execution time: 48.00 seconds
+Questions with matching correct answers: 24
+Percentage correct: 96.00%
+Execution time: 15.74 seconds
 == Test run: 2 ==
 Questions requested: 25
 Questions with matching correct answers: 22
 Percentage correct: 88.00%
-Execution time: 38.71 seconds
+Execution time: 13.69 seconds
 == Test run: 3 ==
 Questions requested: 25
 Questions with matching correct answers: 23
 Percentage correct: 92.00%
-Execution time: 42.52 seconds
+Execution time: 14.16 seconds
 == Test run: 4 ==
 Questions requested: 25
-Questions with matching correct answers: 21
-Percentage correct: 84.00%
-Execution time: 39.09 seconds
+Questions with matching correct answers: 22
+Percentage correct: 88.00%
+Execution time: 13.82 seconds
 =============================
-Percentage correct: min=84.00%, avg=88.00%, max=92.00% | Execution time: min=38.71s, avg=42.08s, max=48.00s
+Percentage correct: min=88.00%, avg=91.00%, max=96.00% | Execution time: min=13.69s, avg=14.35s, max=15.74s
 =============================

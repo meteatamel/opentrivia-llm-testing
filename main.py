@@ -12,6 +12,7 @@ import time
 
 logger = logging.getLogger(__name__)
 
+
 def get_questions(num_questions):
     """
     Get questions from OpenTrivia and filter out unnecessary fields
@@ -136,6 +137,8 @@ def compare_question_lists(questions_original, questions_graded):
 
 
 def run_test(project_id, model_name, no_questions, google_search_grounding):
+    start_time = time.time()
+
     logger.info(f"Questions requested: {no_questions}")
 
     questions_original = get_questions(no_questions)
@@ -149,7 +152,11 @@ def run_test(project_id, model_name, no_questions, google_search_grounding):
 
     percentage_correct = compare_question_lists(questions_original, questions_graded)
     logger.info(f"Percentage correct: {percentage_correct:.2f}%")
-    return percentage_correct
+
+    execution_time = time.time() - start_time
+    logger.info(f"Execution time: {execution_time:.2f} seconds")
+
+    return percentage_correct, execution_time
 
 
 def run_tests(project_id, model_name, num_iterations, no_questions, google_search_grounding):
@@ -161,19 +168,27 @@ def run_tests(project_id, model_name, num_iterations, no_questions, google_searc
     logger.info(f"Model: {model_name}")
     logger.info(f"=============================")
 
-    start_time = time.time()
     results = []
+    execution_times = []
 
     for iteration in range(num_iterations):
         logger.info(f"== Test run: {iteration + 1} ==")
-        percentage_correct = run_test(project_id, model_name, no_questions, google_search_grounding)
+        percentage_correct, execution_time = run_test(project_id, model_name, no_questions, google_search_grounding)
         results.append(percentage_correct)
-    average_percentage = sum(results) / num_iterations
+        execution_times.append(execution_time)
 
-    end_time = time.time()
-    execution_time = end_time - start_time
-    logger.info(f"Execution time: {execution_time:.2f} seconds")
-    logger.info(f"=== Average percentage correct over {num_iterations} runs: {average_percentage:.2f}% ===\n")
+    average_percentage = sum(results) / num_iterations
+    min_percentage = min(results)
+    max_percentage = max(results)
+
+    average_execution_time = sum(execution_times) / num_iterations
+    min_execution_time = min(execution_times)
+    max_execution_time = max(execution_times)
+
+    logger.info(f"=============================")
+    logger.info(f"Percentage correct: min={min_percentage:.2f}%, avg={average_percentage:.2f}%, max={max_percentage:.2f}% | "
+                f"Execution time: min={min_execution_time:.2f}s, avg={average_execution_time:.2f}s, max={max_execution_time:.2f}s")
+    logger.info(f"=============================\n")
 
 
 def parse_args():
@@ -186,6 +201,7 @@ def parse_args():
 
     args = parser.parse_args()
     return args
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(message)s')
