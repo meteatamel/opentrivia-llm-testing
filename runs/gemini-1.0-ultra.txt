@@ -1,0 +1,31 @@
+python main.py quizaic gemini-1.0-ultra
+=============================
+Project: quizaic
+No of iterations: 4
+No of questions per iteration: 25
+Google search grounding: False
+Model: gemini-1.0-ultra
+=============================
+== Test run: 1 ==
+Questions requested: 25
+Questions with matching correct answers: 24
+Percentage correct: 96.00%
+Execution time: 43.92 seconds
+== Test run: 2 ==
+Questions requested: 25
+Questions with matching correct answers: 23
+Percentage correct: 92.00%
+Execution time: 44.67 seconds
+== Test run: 3 ==
+Questions requested: 25
+Questions with matching correct answers: 23
+Percentage correct: 92.00%
+Execution time: 45.74 seconds
+== Test run: 4 ==
+Questions requested: 25
+Questions with matching correct answers: 24
+Percentage correct: 96.00%
+Execution time: 44.15 seconds
+=============================
+Percentage correct: min=92.00%, avg=94.00%, max=96.00% | Execution time: min=43.92s, avg=44.62s, max=45.74s
+=============================
