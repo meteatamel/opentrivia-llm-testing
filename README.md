@@ -1,7 +1,7 @@
 # OpenTrivia LLM testing
 
-A test suite to see if LLMs can correctly guess the correct answer in OpenTrivia
-quizzes.
+A test suite to see if LLMs can correctly guess the correct answer in quizzes from [Open
+Trivia database](https://opentdb.com/).
 
 Install dependencies:
 
