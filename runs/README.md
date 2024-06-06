@@ -1,6 +1,6 @@
 # Results
 
-| Model | Google Search Grounding | Percentage Correct (Min, Avg, Max) | Execution Seconds (Min, Avg, Max) |
+| Model | Google Search <br> Grounding | Percentage Correct <br> (Min, Avg, Max) | Execution Seconds <br> (Min, Avg, Max) |
 |:------|:------------------------|:-----------------------------------|:----------------------------------|
 | gemini-1.0-pro   | False        | 88, 91, 96                         | 13.69, 14.35, 15.74               |
 | gemini-1.0-pro   | True         | 76, 84, 92                         | 16.27, 16.61, 17.4                |
